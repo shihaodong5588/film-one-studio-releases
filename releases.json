@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "releases": [
+    {
+      "platform": "mac-arm64",
+      "status": "published",
+      "channel": "trial",
+      "signature": "ad-hoc",
+      "notarized": false,
+      "version": "0.1.1",
+      "url": "https://github.com/shihaodong5588/film-one-studio-releases/releases/download/v0.1.1/Film-one-Studio-0.1.1-mac-arm64.dmg",
+      "sha256": "6b0e915467954471ad69b26188efa912a544c390a2d57cfe01547da5d3678d53",
+      "notes": "免费试用版，尚无 Apple Developer ID 签名与公证；macOS 可能阻止打开。"
+    }
+  ]
+}
