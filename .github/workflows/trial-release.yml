@@ -43,7 +43,11 @@ jobs:
           version=tag[1:]; archive=f'Film-one-Studio-{version}-mac-arm64.app.zip'; name=f'Film-one-Studio-{version}-mac-arm64.dmg'
           work=Path(tempfile.mkdtemp(prefix='studio-trial-')); published=False; manifest_saved=False
           def run(*args,env=None):
-            return subprocess.run(args,check=True,capture_output=True,text=True,env=env).stdout
+            result=subprocess.run(args,capture_output=True,text=True,env=env)
+            if result.returncode:
+              print(result.stderr[-1800:])
+              raise RuntimeError('Publication command failed: '+args[0])
+            return result.stdout
           def api(method,endpoint,body=None):
             args=['gh','api',endpoint,'--method',method]
             if body is None: return json.loads(run(*args))
@@ -76,7 +80,7 @@ jobs:
             app=stage/'Film-one Studio.app'
             with open(app/'Contents/Info.plist','rb') as file: info=plistlib.load(file)
             if info.get('CFBundleIdentifier')!='com.fileone.studio' or info.get('CFBundleShortVersionString')!=version: raise RuntimeError('App identity/version mismatch')
-            run('lipo','-verify_arch','arm64',str(app/'Contents/MacOS'/info['CFBundleExecutable']))
+            run('lipo',str(app/'Contents/MacOS'/info['CFBundleExecutable']),'-verify_arch','arm64')
             sign_dir=work/'sign'; run('npm','install','--ignore-scripts','--no-audit','--no-fund','--prefix',str(sign_dir),'@electron/osx-sign@1.3.3',env=clean_env)
             entitlements=work/'entitlements.plist'
             with open(entitlements,'wb') as file: plistlib.dump({'com.apple.security.cs.allow-jit':True},file)
