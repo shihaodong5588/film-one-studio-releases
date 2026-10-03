@@ -1,0 +1,7 @@
+{
+  "name": "film-one-studio-releases",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Installer publication automation only; application development source is not stored here.",
+  "dependencies": { "ffmpeg-static": "5.3.0" }
+}
