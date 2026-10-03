@@ -63,7 +63,9 @@ jobs:
             return file['sha'],data
           clean_env={key:value for key,value in os.environ.items() if key not in ['GH_TOKEN','GITHUB_TOKEN','ACTIONS_RUNTIME_TOKEN','ACTIONS_ID_TOKEN_REQUEST_TOKEN']}
           try:
-            original=api('GET',f'repos/{repo}/releases/tags/{tag}')
+            release_api=json.loads(run('gh','release','view',tag,'--repo',repo,'--json','apiUrl'))['apiUrl']
+            if not release_api.startswith('https://api.github.com/repos/'+repo+'/releases/'): raise RuntimeError('Unexpected release API URL')
+            original=api('GET',release_api)
             if not original['draft']: raise RuntimeError('Published versions are immutable')
             manifest_sha,manifest=release_manifest()
             old=next((item for item in manifest['releases'] if item.get('platform')=='mac-arm64'),None)
